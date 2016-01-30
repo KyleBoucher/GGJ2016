@@ -199,7 +199,7 @@ public class SymbolController : MonoBehaviour {
 		foreach(char c in currentSpell) {
 			obj = GetObjectBySymbol(c);
 			Symbol s = obj.GetComponent<Symbol>();
-			s.StartCooldown(Mathf.Lerp(Settings._.BaseCooldown3, Settings._.BaseCooldown12, (currentSpell.Length-3)/9.0f));
+			s.StartCooldown(Utils.CalcCooldown(currentSpell));
 		}
 
 		//ResetHighlights();
@@ -223,7 +223,7 @@ public class SymbolController : MonoBehaviour {
 		//clear the line renderer
 		lineController.ResetLines ();
 
-		scoreController.AddScore (activePlayer, ScoreConverter.ConvertSpellToScore(currentSpell));
+		scoreController.AddScore (activePlayer, Utils.ConvertSpellToScore(currentSpell));
 	}
 
 

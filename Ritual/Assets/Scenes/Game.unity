@@ -515,9 +515,25 @@ MonoBehaviour:
   Symbols: 4100420043004400450046004700480049004a004b004c00
   AutoGenSpells:
   - length: 3
+    count: 10
+  - length: 4
+    count: 9
+  - length: 5
+    count: 8
+  - length: 6
+    count: 7
+  - length: 7
+    count: 6
+  - length: 8
     count: 5
+  - length: 9
+    count: 4
+  - length: 10
+    count: 3
+  - length: 11
+    count: 2
   - length: 12
-    count: 5
+    count: 1
   MinLength: 3
   MaxLength: 12
 --- !u!4 &691558496
