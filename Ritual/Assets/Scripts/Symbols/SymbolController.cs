@@ -11,6 +11,10 @@ public class SymbolController : MonoBehaviour {
 	public List<Sprite> sprites = new List<Sprite>();
 	public LineController lineController;
 	public GameObject lerperPrefab;
+	public ScoreController scoreController;
+	public Constants.PlayerIndex activePlayer;
+
+	public Transform parentTransform;
 
 	//private List<Symbol> symbols = new List<Symbol>();
 	private int symbolCount = 12;
@@ -67,7 +71,7 @@ public class SymbolController : MonoBehaviour {
 		currentSpell = "" + symbol;
 
 		//add to line renderer
-		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition);
+		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition + parentTransform.localPosition);
 
 		HandleSpellSearch(symbol);
 	}
@@ -98,7 +102,7 @@ public class SymbolController : MonoBehaviour {
 		}
 
 		//add to line renderer
-		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition);
+		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition + parentTransform.localPosition);
 
 		currentSpell += symbol;
 
@@ -195,6 +199,8 @@ public class SymbolController : MonoBehaviour {
 		
 		//clear the line renderer
 		lineController.ResetLines ();
+
+		scoreController.AddScore (activePlayer, 10);
 	}
 
 

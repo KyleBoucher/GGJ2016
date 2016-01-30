@@ -24,4 +24,8 @@ public class Settings : MonoBehaviour {
 	public float FizzleShakeTime = 0.5f;
 	public float BaseCooldown3 = 6.0f;
 	public float BaseCooldown12 = 1.0f;
+
+	public int MinScore = 0;
+	public int StartingScore = 50;
+	public int MaxScore = 100;
 }
