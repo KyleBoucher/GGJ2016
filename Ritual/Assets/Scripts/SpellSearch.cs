@@ -10,6 +10,8 @@ public class SpellSearch : MonoBehaviour {
 	public int MinLength = 3;
 	public int MaxLength = 12;
 
+	public string currentSpell = "";
+
 	void Start() {
 		foreach(var item in AutoGenSpells) {
 			for(int i = 0; i < item.count; ++i) {
@@ -41,14 +43,19 @@ public class SpellSearch : MonoBehaviour {
 
 	public List<string> SearchSpells(string search) {
 		List<string> retList = new List<string>();
+		retList.Add(currentSpell);
 
-		foreach(string spell in AllSpells) {
-			if(spell.IndexOf(search) == 0) {
-				retList.Add(spell);
-			}
-		}
+//		foreach(string spell in AllSpells) {
+//			if(spell.IndexOf(search) == 0) {
+//				retList.Add(spell);
+//			}
+//		}
 
 		return retList;
+	}
+
+	public void GenerateNewSpell() {
+		currentSpell = GetRandomSpell(Random.Range(0, MaxLength));
 	}
 }
 

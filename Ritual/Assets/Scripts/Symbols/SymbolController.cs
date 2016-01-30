@@ -57,6 +57,8 @@ public class SymbolController : MonoBehaviour {
 			// set spell symbol
 			symbol.mySymbol = spellSearch.Symbols[i];
 		}
+
+		spellSearch.GenerateNewSpell();
 	}
 
 	public GameObject GetObjectBySymbol(char symbol) {
@@ -90,7 +92,11 @@ public class SymbolController : MonoBehaviour {
 		}
 
 		if(isSpell) {
+//		if(currentSpell.Length < 3) {
+//			FizzleSpell();
+//		} else {
 			CastSpell();
+//		}
 		} else {
 			FizzleSpell();
 		}
@@ -169,9 +175,20 @@ public class SymbolController : MonoBehaviour {
 			// no available spell
 			FizzleSpell();
 		}
-
+//		List<char> symbols = new List<char>(spellSearch.Symbols);
 		Outline outline = null;
 		GameObject obj = null;
+//		foreach(char c in symbols) {
+//			obj = GetObjectBySymbol(c);
+//			var s = obj.GetComponent<Symbol>();
+//			if(s.isCooldown || currentSpell.Contains(""+c)) { continue; }
+//			outline = obj.GetComponent<Outline>();
+//			if(outline != null) {
+//				outline.enabled = true;
+//				outline.effectColor = new Color(Color.red.r, Color.red.g, Color.red.b, outline.effectColor.a);
+//			}
+//		}
+
 		foreach(string spell in spells) {
 			// this is a spell with only one more symbol
 			if(spell.Length == currentSpell.Length+1){
@@ -245,6 +262,8 @@ public class SymbolController : MonoBehaviour {
 				ssss.Remove(s);
 			}
 		}
+
+		spellSearch.GenerateNewSpell();
 	}
 
 
