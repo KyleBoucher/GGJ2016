@@ -9,6 +9,7 @@ public class SymbolController : MonoBehaviour {
 	public GameObject symbolPrefab;
 	public GameObject parentPrefab;
 	public List<Sprite> sprites = new List<Sprite>();
+	public LineController lineController;
 
 	//private List<Symbol> symbols = new List<Symbol>();
 	private int symbolCount = 12;
@@ -61,6 +62,9 @@ public class SymbolController : MonoBehaviour {
 	public void StartSpell(char symbol) {
 		currentSpell = "" + symbol;
 
+		//add to line renderer
+		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition);
+
 		HandleSpellSearch(symbol);
 	}
 	public void EndSpell() {
@@ -88,6 +92,9 @@ public class SymbolController : MonoBehaviour {
 		if(currentSpell.Length == 0 || currentSpell.Contains("" + symbol)) {
 			return;
 		}
+
+		//add to line renderer
+		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition);
 
 		currentSpell += symbol;
 
@@ -149,10 +156,16 @@ public class SymbolController : MonoBehaviour {
 		Debug.Log("Spell Fizzled");
 		currentSpell = "";
 		ResetHighlights();
+
+		//clear the line renderer
+		lineController.ResetLines ();
 	}
 
 	public void CastSpell() {
 		Debug.Log ("Spell cast: " + currentSpell);
+		
+		//clear the line renderer
+		lineController.ResetLines ();
 	}
 
 
