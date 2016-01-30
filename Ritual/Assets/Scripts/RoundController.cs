@@ -6,6 +6,7 @@ public class RoundController : MonoBehaviour {
 
 	public ScoreController scoreController;
 	public SymbolController symbolController;
+	public AIController aiController;
 	public Text roundNumber;
 	public GameObject loseScreen;
 
@@ -30,19 +31,20 @@ public class RoundController : MonoBehaviour {
 
 		//stop all controls and fizzle all spells, active and future
 		symbolController.StopCooldowns();
-		//aiController.Stop();
+		aiController.Stop();
 
 		//show ui stuff
 	}
 
 	public void BeginRound(){
-		//aiController.Start();
+		aiController.Begin();
 
 		roundNumber.gameObject.SetActive (false);
 	}
 
 	public void LoseGame(){
 		//lose the game
+		aiController.Stop();
 
 		//show ui stuff
 		loseScreen.SetActive(true);

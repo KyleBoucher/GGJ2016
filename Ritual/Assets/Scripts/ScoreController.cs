@@ -25,6 +25,8 @@ public class ScoreController : MonoBehaviour {
 
 		UpdateUI ();
 		CheckVictoryConditions ();
+
+		Debug.Log ("" + playerIndex + " : " + score);
 	}
 
 	private void UpdateUI(){

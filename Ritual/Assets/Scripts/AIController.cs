@@ -120,4 +120,20 @@ public class AIController : MonoBehaviour {
 	public void SetIsPlaying(bool playing) {
 		isPlaying = playing;
 	}
+
+	public void Begin() {
+		SetIsPlaying(true);
+	}
+
+	public void Stop() {
+		SetIsPlaying(false);
+
+		targetSpell = "";
+		targetSymbol = null;
+		lineController.ResetLines();
+	}
 }
+
+
+
+

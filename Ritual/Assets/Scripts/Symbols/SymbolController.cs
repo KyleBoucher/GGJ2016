@@ -14,6 +14,7 @@ public class SymbolController : MonoBehaviour {
 	public ScoreController scoreController;
 	public Constants.PlayerIndex activePlayer;
 	public RoundController roundController;
+	public List<char> SpecialSymbols = new List<char>();
 
 	public Transform parentTransform;
 
@@ -195,12 +196,12 @@ public class SymbolController : MonoBehaviour {
 		Debug.Log("Spell Fizzled");
 
 		//add the cooldowns for the symbols
-		GameObject obj = null;
-		foreach(char c in currentSpell) {
-			obj = GetObjectBySymbol(c);
-			Symbol s = obj.GetComponent<Symbol>();
-			s.StartCooldown(Utils.CalcCooldown(currentSpell));
-		}
+//		GameObject obj = null;
+//		foreach(char c in currentSpell) {
+//			obj = GetObjectBySymbol(c);
+//			Symbol s = obj.GetComponent<Symbol>();
+//			s.StartCooldown(Utils.CalcCooldown(currentSpell));
+//		}
 
 		//ResetHighlights();
 		ResetDimmedSymbols(true);
@@ -213,17 +214,35 @@ public class SymbolController : MonoBehaviour {
 
 	public void CastSpell() {
 		Debug.Log ("Spell cast: " + currentSpell);
+		var scoreMult = 1f;
 		GameObject obj = null;
 		foreach(char c in currentSpell) {
 			obj = GetObjectBySymbol(c);
 			Symbol s = obj.GetComponent<Symbol>();
-			s.StartCooldown(Mathf.Lerp(Settings._.BaseCooldown3, Settings._.BaseCooldown12, (currentSpell.Length-3)/9.0f));
+			s.StartCooldown(Utils.CalcCooldown(currentSpell));
+
+			if(SpecialSymbols.Contains(c)) {
+				scoreMult *= 2f;
+				SpecialSymbols.Remove(c);
+			}
 		}
 		
 		//clear the line renderer
 		lineController.ResetLines ();
 
-		scoreController.AddScore (activePlayer, Utils.ConvertSpellToScore(currentSpell));
+		scoreController.AddScore (activePlayer, (int)(Utils.ConvertSpellToScore(currentSpell) * scoreMult));
+
+		// make one a special one
+		List<char> ssss = new List<char>(spellSearch.Symbols);
+		while(SpecialSymbols.Count < 12 && ssss.Count != 0) {
+			char s = ssss[Random.Range(0, ssss.Count)];
+			if(false == SpecialSymbols.Contains(s)) {
+				SpecialSymbols.Add(s);
+				break;
+			} else {
+				ssss.Remove(s);
+			}
+		}
 	}
 
 
