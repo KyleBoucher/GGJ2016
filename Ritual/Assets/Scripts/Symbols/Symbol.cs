@@ -13,6 +13,8 @@ public class Symbol : MonoBehaviour
 	public GameObject lerperPrefab;
 	public Outline outline;
 
+	public ParticleSystem glow;
+
 	private SymbolController controller;
 	private float cooldownTime = 0;
 	public Vector3 origPos;
@@ -114,6 +116,15 @@ public class Symbol : MonoBehaviour
 	private void CreateLerper(){
 		lerper = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
 	}
+
+	public void StartGlow(){
+		glow.Play ();
+	}
+
+	public void StopGlow(){
+		glow.Stop ();
+	}
+
 }
 
 

@@ -224,6 +224,7 @@ public class SymbolController : MonoBehaviour {
 			if(SpecialSymbols.Contains(c)) {
 				scoreMult *= 2f;
 				SpecialSymbols.Remove(c);
+				s.StopGlow ();
 			}
 		}
 		
@@ -238,6 +239,7 @@ public class SymbolController : MonoBehaviour {
 			char s = ssss[Random.Range(0, ssss.Count)];
 			if(false == SpecialSymbols.Contains(s)) {
 				SpecialSymbols.Add(s);
+				GetObjectBySymbol (s).GetComponent<Symbol> ().StartGlow ();
 				break;
 			} else {
 				ssss.Remove(s);

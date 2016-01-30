@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -48,5 +49,9 @@ public class RoundController : MonoBehaviour {
 
 		//show ui stuff
 		loseScreen.SetActive(true);
+	}
+
+	public void QuitGame(){
+		SceneManager.LoadScene ("Menu");
 	}
 }
