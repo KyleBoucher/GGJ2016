@@ -111,6 +111,20 @@ public class SymbolController : MonoBehaviour {
 		}
 	}
 
+	private void ResetDimmedSymbols(bool fizzle) {
+		for(int i = 0; i < parentPrefab.transform.childCount; ++i) {
+			var child = parentPrefab.transform.GetChild(i);
+			var img = child.GetComponent<Image>();
+			if(img != null) {
+				img.CrossFadeColor(Color.white, Settings._.SymbolFade, true, false);
+			}
+			var s = child.GetComponent<Symbol>();
+			if(fizzle && currentSpell.Contains("" + s.mySymbol)) {
+				s.Shake();
+			}
+		}
+	}
+
 	private void HandleSpellSearch(char lastSymbol) {
 		// reset all highlights
 		ResetHighlights();
@@ -120,7 +134,7 @@ public class SymbolController : MonoBehaviour {
 		if(ind != -1) {
 			var ch = parentPrefab.transform.GetChild(ind);
 			var img = ch.GetComponent<Image>();
-			img.CrossFadeColor(Color.grey*Color.red, 1f, false, false);
+			img.CrossFadeColor(Color.grey, Settings._.SymbolFade, false, false);
 		}
 
 		// search with "currentSpell"
@@ -154,8 +168,10 @@ public class SymbolController : MonoBehaviour {
 
 	public void FizzleSpell() {
 		Debug.Log("Spell Fizzled");
-		currentSpell = "";
 		ResetHighlights();
+		ResetDimmedSymbols(true);
+
+		currentSpell = "";
 
 		//clear the line renderer
 		lineController.ResetLines ();
@@ -163,6 +179,12 @@ public class SymbolController : MonoBehaviour {
 
 	public void CastSpell() {
 		Debug.Log ("Spell cast: " + currentSpell);
+		GameObject obj = null;
+		foreach(char c in currentSpell) {
+			obj = GetObjectBySymbol(c);
+			Symbol s = obj.GetComponent<Symbol>();
+			s.StartCooldown(1f);
+		}
 		
 		//clear the line renderer
 		lineController.ResetLines ();
