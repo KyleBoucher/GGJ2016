@@ -38,7 +38,7 @@ public class ScoreController : MonoBehaviour {
 
 		var sliderOffset = gameScore - Settings._.StartingScore;
 		var sliderRatio = (float)sliderOffset / ((float)scoreOffset * 0.5f);
-		sliderRatio = Mathf.Clamp (sliderRatio, 0f, 1f);
+		sliderRatio = Mathf.Clamp (sliderRatio, -1f, 1f);
 		var position = slider.transform.localPosition;
 		position.x = sliderRatio * Constants.scoreWidth / 2f;
 		slider.transform.localPosition = position;
