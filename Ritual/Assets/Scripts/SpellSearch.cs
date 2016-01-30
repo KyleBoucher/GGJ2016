@@ -30,7 +30,7 @@ public class SpellSearch : MonoBehaviour {
 		List<char> localSymbols = new List<char>(Symbols);
 
 		for(int i = 0; i < length; ++i) {
-			int ind = Random.Range(0, localSymbols.Count-1);
+			int ind = Random.Range(0, localSymbols.Count);
 			ret += localSymbols[ind];
 
 			localSymbols.RemoveAt(ind);

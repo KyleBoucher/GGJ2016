@@ -10,6 +10,7 @@ public class SymbolController : MonoBehaviour {
 	public GameObject parentPrefab;
 	public List<Sprite> sprites = new List<Sprite>();
 	public LineController lineController;
+	public GameObject lerperPrefab;
 
 	//private List<Symbol> symbols = new List<Symbol>();
 	private int symbolCount = 12;
@@ -42,6 +43,9 @@ public class SymbolController : MonoBehaviour {
 			var symbolImage = symbolObject.GetComponent<Image>();
 			if(symbolImage != null) {
 				symbolImage.sprite = sprites[i];
+				var childImg = symbol.GetComponentsInChildren<Image>()[1];
+				childImg.sprite = sprites[i];
+				childImg.fillAmount = 1f;
 			}
 
 			// set spell symbol
@@ -114,11 +118,13 @@ public class SymbolController : MonoBehaviour {
 	private void ResetDimmedSymbols(bool fizzle) {
 		for(int i = 0; i < parentPrefab.transform.childCount; ++i) {
 			var child = parentPrefab.transform.GetChild(i);
-			var img = child.GetComponent<Image>();
-			if(img != null) {
-				img.CrossFadeColor(Color.white, Settings._.SymbolFade, true, false);
-			}
+			var img = child.GetComponentsInChildren<Image>()[1];
 			var s = child.GetComponent<Symbol>();
+			if(s.isCooldown) {continue;}
+			if(img != null && img.fillAmount != 1f) {
+				var a = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
+				a.Init(img.fillAmount, 1f, Settings._.SymbolFade, img);
+			}
 			if(fizzle && currentSpell.Contains("" + s.mySymbol)) {
 				s.Shake();
 			}
@@ -133,8 +139,9 @@ public class SymbolController : MonoBehaviour {
 		int ind = spellSearch.Symbols.BinarySearch(lastSymbol);
 		if(ind != -1) {
 			var ch = parentPrefab.transform.GetChild(ind);
-			var img = ch.GetComponent<Image>();
-			img.CrossFadeColor(Color.grey, Settings._.SymbolFade, false, false);
+			var img = ch.GetComponentsInChildren<Image>()[1];
+			var a = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
+			a.Init(img.fillAmount, 0f, Settings._.SymbolFade, img);
 		}
 
 		// search with "currentSpell"
@@ -151,13 +158,13 @@ public class SymbolController : MonoBehaviour {
 			if(spell.Length == currentSpell.Length+1){
 				obj = GetObjectBySymbol(spell[currentSpell.Length]);
 				outline = obj.GetComponent<Outline>();
-				outline.effectColor = Color.magenta;
+				outline.effectColor = new Color(Color.magenta.r, Color.magenta.g, Color.magenta.b, outline.effectColor.a);
 			}
 			// else a few more symbols to go
 			else if(spell.Length > currentSpell.Length+1){
 				obj = GetObjectBySymbol(spell[currentSpell.Length]);
 				outline = obj.GetComponent<Outline>();
-				outline.effectColor = Color.red;
+				outline.effectColor = new Color(Color.red.r, Color.red.g, Color.red.b, outline.effectColor.a);
 			}
 
 			if(outline != null) {
@@ -183,7 +190,7 @@ public class SymbolController : MonoBehaviour {
 		foreach(char c in currentSpell) {
 			obj = GetObjectBySymbol(c);
 			Symbol s = obj.GetComponent<Symbol>();
-			s.StartCooldown(1f);
+			s.StartCooldown(Mathf.Lerp(Settings._.BaseCooldown3, Settings._.BaseCooldown12, (currentSpell.Length-3)/9.0f));
 		}
 		
 		//clear the line renderer

@@ -22,4 +22,6 @@ public class Settings : MonoBehaviour {
 	public float SymbolFade = 0.2f;
 	public float FizzleShakeAmount = 20f;
 	public float FizzleShakeTime = 0.5f;
+	public float BaseCooldown3 = 6.0f;
+	public float BaseCooldown12 = 1.0f;
 }

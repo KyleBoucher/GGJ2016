@@ -10,6 +10,8 @@ public class Symbol : MonoBehaviour
 {
 	public char mySymbol;
 	public bool isCooldown = false;
+	public GameObject lerperPrefab;
+	public Outline outline;
 
 	private SymbolController controller;
 	private float cooldownTime = 0;
@@ -20,6 +22,10 @@ public class Symbol : MonoBehaviour
 	}
 
 	public void OnMouseDown() {
+		if(isCooldown) {
+			return;
+		}
+
 		// start of spell
 		controller.StartSpell(mySymbol);
 	}
@@ -66,25 +72,22 @@ public class Symbol : MonoBehaviour
 		origPos = Vector3.zero;
 	}
 
-	public void StartCooldown(float time) {
-		cooldownTime = time;
-		StopCoroutine("Cooldown");
+	public void StartCooldown(float cooldown) {
+		cooldownTime = cooldown;
 		StartCoroutine("Cooldown");
 	}
 
 	IEnumerator Cooldown() {
 		isCooldown = true;
-		var img = gameObject.GetComponent<Image>();
-		var timer = 0f;
-		while(true) {
-			timer += Time.deltaTime;
-			img.CrossFadeColor(Color.Lerp(img.color, Color.white, Time.deltaTime), cooldownTime, true, false);
+		outline.effectColor = new Color(outline.effectColor.r, outline.effectColor.g, outline.effectColor.b, 0f);
 
-			if(timer >= cooldownTime) {
-				break;
-			}
-			yield return null;
-		}
+		var img = gameObject.GetComponentsInChildren<Image>()[1];
+		var a = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
+		a.Init(img.fillAmount, 1f, cooldownTime, img);
+
+		yield return new WaitForSeconds(cooldownTime);
+
+		outline.effectColor = new Color(outline.effectColor.r, outline.effectColor.g, outline.effectColor.b, 1f);
 		isCooldown = false;
 	}
 }
