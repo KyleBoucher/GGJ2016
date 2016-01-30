@@ -39,6 +39,7 @@ public class LineController : MonoBehaviour {
 		point.z = 0;
 		lines[lineCount].StartPos = point;
 		lines[lineCount].EndPos = GetMousePos();
+		lines[lineCount].gameObject.SetActive(true);
 
 	}
 
@@ -47,8 +48,9 @@ public class LineController : MonoBehaviour {
 		//reset all lines
 
 		foreach (var line in lines) {
-			line.StartPos = Vector3.one * float.MaxValue;
+			line.StartPos = -Vector3.one * float.MaxValue;
 			line.EndPos = Vector3.one * float.MaxValue;
+			line.gameObject.SetActive(false);
 		}
 
 		gameObject.SetActive (false);
