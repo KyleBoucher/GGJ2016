@@ -15,8 +15,12 @@ public class Symbol : MonoBehaviour
 
 	private SymbolController controller;
 	private float cooldownTime = 0;
-	private Vector3 origPos;
+	public Vector3 origPos;
 	private Lerper lerper;
+
+	void Start() {
+		origPos = transform.localPosition;
+	}
 
 	public void SetController( SymbolController controller){
 		this.controller = controller;
@@ -56,7 +60,6 @@ public class Symbol : MonoBehaviour
 
 	IEnumerator DoShake() {
 		var timer = 0f;
-		origPos = transform.localPosition;
 		Vector2 randPos;
 		while(true) {
 			timer += Time.deltaTime;
@@ -70,7 +73,7 @@ public class Symbol : MonoBehaviour
 			yield return null;
 		}
 
-		origPos = Vector3.zero;
+		//origPos = Vector3.zero;
 	}
 
 	public void StopCooldown(){

@@ -58,7 +58,7 @@ public class SymbolController : MonoBehaviour {
 		}
 	}
 
-	private GameObject GetObjectBySymbol(char symbol) {
+	public GameObject GetObjectBySymbol(char symbol) {
 		var ind = spellSearch.Symbols.BinarySearch(symbol);
 		if(ind != -1) {
 			var child = parentPrefab.transform.GetChild(ind);

@@ -11,6 +11,9 @@ public class LineController : MonoBehaviour {
 
 	private int lineCount = 0;
 
+	public Constants.PlayerIndex playerIndex;
+	public Vector3 AIMousePos;
+
 	// Use this for initialization
 	void Start () {
 
@@ -56,11 +59,26 @@ public class LineController : MonoBehaviour {
 		gameObject.SetActive (false);
 	}
 
-	private Vector3 GetMousePos(){
-		var UIMousePos = Input.mousePosition;
-		UIMousePos.x = UIMousePos.x/Screen.width * Constants.screenWidth - Constants.screenWidth*0.5f;
-		UIMousePos.y = UIMousePos.y/Screen.height * Constants.screenHeight - Constants.screenHeight*0.5f;
+	public void SetAIMousePos(Vector3 pos) {
+		AIMousePos = pos;
+	}
 
-		return UIMousePos;
+	private Vector3 GetMousePos(){
+		if(playerIndex == Constants.PlayerIndex.PLAYER_1) {
+			var UIMousePos = Input.mousePosition;
+			UIMousePos.x = UIMousePos.x/Screen.width * Constants.screenWidth - Constants.screenWidth*0.5f;
+			UIMousePos.y = UIMousePos.y/Screen.height * Constants.screenHeight - Constants.screenHeight*0.5f;
+
+			return UIMousePos;
+		} else {
+			return AIMousePos;
+		}
 	}
 }
+
+
+
+
+
+
+
