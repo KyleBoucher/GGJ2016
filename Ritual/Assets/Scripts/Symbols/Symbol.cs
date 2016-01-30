@@ -16,6 +16,7 @@ public class Symbol : MonoBehaviour
 	private SymbolController controller;
 	private float cooldownTime = 0;
 	private Vector3 origPos;
+	private Lerper lerper;
 
 	public void SetController( SymbolController controller){
 		this.controller = controller;
@@ -72,6 +73,19 @@ public class Symbol : MonoBehaviour
 		origPos = Vector3.zero;
 	}
 
+	public void StopCooldown(){
+		if (lerper != null) {
+			lerper.Stop ();
+			lerper = null;
+		}
+
+		isCooldown = false;
+
+		StopCoroutine ("Cooldown");
+
+		outline.effectColor = new Color(outline.effectColor.r, outline.effectColor.g, outline.effectColor.b, 1f);
+	}
+
 	public void StartCooldown(float cooldown) {
 		cooldownTime = cooldown;
 		StartCoroutine("Cooldown");
@@ -81,14 +95,21 @@ public class Symbol : MonoBehaviour
 		isCooldown = true;
 		outline.effectColor = new Color(outline.effectColor.r, outline.effectColor.g, outline.effectColor.b, 0f);
 
+		if (lerper == null) {
+			CreateLerper ();
+		}
+
 		var img = gameObject.GetComponentsInChildren<Image>()[1];
-		var a = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
-		a.Init(img.fillAmount, 1f, cooldownTime, img);
+		lerper.Init (0f, 1f, cooldownTime, img);
 
 		yield return new WaitForSeconds(cooldownTime);
 
 		outline.effectColor = new Color(outline.effectColor.r, outline.effectColor.g, outline.effectColor.b, 1f);
 		isCooldown = false;
+	}
+
+	private void CreateLerper(){
+		lerper = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
 	}
 }
 

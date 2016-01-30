@@ -25,9 +25,13 @@ public class Lerper : MonoBehaviour {
 		theImg.fillAmount += perSec*Time.deltaTime;
 
 		if(timer >= length) {
-			theImg.fillAmount = endValue;
-			Destroy(this.gameObject);
+			Stop ();
 		}
+	}
+
+	public void Stop(){
+		theImg.fillAmount = endValue;
+		Destroy(this.gameObject);
 	}
 
 }

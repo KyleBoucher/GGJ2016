@@ -32,11 +32,13 @@ public class ScoreController : MonoBehaviour {
 		var currentScore = gameScore - Settings._.MinScore;
 
 		var scoreRatio = (float)currentScore / (float)scoreOffset;
+		scoreRatio = Mathf.Clamp (scoreRatio, 0f, 1f);
 		playerBar.fillAmount = scoreRatio;
 		opponentBar.fillAmount = 1 - scoreRatio;
 
 		var sliderOffset = gameScore - Settings._.StartingScore;
 		var sliderRatio = (float)sliderOffset / ((float)scoreOffset * 0.5f);
+		sliderRatio = Mathf.Clamp (sliderRatio, 0f, 1f);
 		var position = slider.transform.localPosition;
 		position.x = sliderRatio * Constants.scoreWidth / 2f;
 		slider.transform.localPosition = position;

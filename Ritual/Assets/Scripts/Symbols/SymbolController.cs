@@ -13,6 +13,7 @@ public class SymbolController : MonoBehaviour {
 	public GameObject lerperPrefab;
 	public ScoreController scoreController;
 	public Constants.PlayerIndex activePlayer;
+	public RoundController roundController;
 
 	public Transform parentTransform;
 
@@ -72,6 +73,7 @@ public class SymbolController : MonoBehaviour {
 
 		//add to line renderer
 		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition + parentTransform.localPosition);
+		roundController.BeginRound ();
 
 		HandleSpellSearch(symbol);
 	}
@@ -119,18 +121,30 @@ public class SymbolController : MonoBehaviour {
 		}
 	}
 
+	public void StopCooldowns(){
+		for (int i = 0; i < parentPrefab.transform.childCount; ++i) {
+			var child = parentPrefab.transform.GetChild (i);
+			var symbol = child.GetComponent<Symbol>();
+			symbol.StopCooldown ();
+		}
+
+		ResetDimmedSymbols (false);
+	}
+
 	private void ResetDimmedSymbols(bool fizzle) {
 		for(int i = 0; i < parentPrefab.transform.childCount; ++i) {
 			var child = parentPrefab.transform.GetChild(i);
 			var img = child.GetComponentsInChildren<Image>()[1];
 			var s = child.GetComponent<Symbol>();
-			if(s.isCooldown) {continue;}
-			if(img != null && img.fillAmount != 1f) {
-				var a = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
-				a.Init(img.fillAmount, 1f, Settings._.SymbolFade, img);
-			}
 			if(fizzle && currentSpell.Contains("" + s.mySymbol)) {
 				s.Shake();
+			}
+
+			if(s.isCooldown) {continue;}
+
+			if(img != null && img.fillAmount != 1f) {
+				var a = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
+				a.Init(0f, 1f, 0f, img);
 			}
 		}
 	}
@@ -145,7 +159,7 @@ public class SymbolController : MonoBehaviour {
 			var ch = parentPrefab.transform.GetChild(ind);
 			var img = ch.GetComponentsInChildren<Image>()[1];
 			var a = (Instantiate(lerperPrefab) as GameObject).GetComponent<Lerper>();
-			a.Init(img.fillAmount, 0f, Settings._.SymbolFade, img);
+			a.Init(1f, 0f, 0f, img);
 		}
 
 		// search with "currentSpell"
@@ -179,7 +193,16 @@ public class SymbolController : MonoBehaviour {
 
 	public void FizzleSpell() {
 		Debug.Log("Spell Fizzled");
-		ResetHighlights();
+
+		//add the cooldowns for the symbols
+		GameObject obj = null;
+		foreach(char c in currentSpell) {
+			obj = GetObjectBySymbol(c);
+			Symbol s = obj.GetComponent<Symbol>();
+			s.StartCooldown(Mathf.Lerp(Settings._.BaseCooldown3, Settings._.BaseCooldown12, (currentSpell.Length-3)/9.0f));
+		}
+
+		//ResetHighlights();
 		ResetDimmedSymbols(true);
 
 		currentSpell = "";
@@ -200,7 +223,7 @@ public class SymbolController : MonoBehaviour {
 		//clear the line renderer
 		lineController.ResetLines ();
 
-		scoreController.AddScore (activePlayer, 10);
+		scoreController.AddScore (activePlayer, ScoreConverter.ConvertSpellToScore(currentSpell));
 	}
 
 
