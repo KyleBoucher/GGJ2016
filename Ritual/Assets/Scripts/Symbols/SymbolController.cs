@@ -74,24 +74,44 @@ public class SymbolController : MonoBehaviour {
 	public void StartSpell(char symbol) {
 		currentSpell = "" + symbol;
 
+		if(false == ValidatePartialSpell()) {
+			FizzleSpell();
+			return;
+		}
+
 		//add to line renderer
 		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition + parentTransform.localPosition);
 		roundController.BeginRound ();
 
 		HandleSpellSearch(symbol);
 	}
-	public void EndSpell() {
+	public bool ValidateSpell() {
 		List<string> spells = spellSearch.SearchSpells(currentSpell);
 		bool isSpell = false;
 		foreach(string spell in spells) {
 			// this is the completed spell
 			if(spell.Length == currentSpell.Length 
-			   && spell.Equals(currentSpell)) {
+				&& spell.Equals(currentSpell)) {
 				isSpell = true;
 			}
 		}
 
-		if(isSpell) {
+		return isSpell;
+	}
+	public bool ValidatePartialSpell() {
+		List<string> spells = spellSearch.SearchSpells(currentSpell);
+		bool isValid = false;
+		foreach(string spell in spells) {
+			if(spell[currentSpell.Length-1] == currentSpell[currentSpell.Length-1]) {
+				isValid = true;
+			}
+		}
+
+		return isValid;
+	}
+	public void EndSpell() {
+
+		if(ValidateSpell()) {
 //		if(currentSpell.Length < 3) {
 //			FizzleSpell();
 //		} else {
@@ -110,10 +130,15 @@ public class SymbolController : MonoBehaviour {
 			return;
 		}
 
+		currentSpell += symbol;
+
+		if(false == ValidatePartialSpell()) {
+			FizzleSpell();
+			return;
+		}
+
 		//add to line renderer
 		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition + parentTransform.localPosition);
-
-		currentSpell += symbol;
 
 		HandleSpellSearch(symbol);
 	}
@@ -189,24 +214,24 @@ public class SymbolController : MonoBehaviour {
 //			}
 //		}
 
-		foreach(string spell in spells) {
-			// this is a spell with only one more symbol
-			if(spell.Length == currentSpell.Length+1){
-				obj = GetObjectBySymbol(spell[currentSpell.Length]);
-				outline = obj.GetComponent<Outline>();
-				outline.effectColor = new Color(Color.magenta.r, Color.magenta.g, Color.magenta.b, outline.effectColor.a);
-			}
-			// else a few more symbols to go
-			else if(spell.Length > currentSpell.Length+1){
-				obj = GetObjectBySymbol(spell[currentSpell.Length]);
-				outline = obj.GetComponent<Outline>();
-				outline.effectColor = new Color(Color.red.r, Color.red.g, Color.red.b, outline.effectColor.a);
-			}
-
-			if(outline != null) {
-				outline.enabled = true;
-			}
-		}
+//		foreach(string spell in spells) {
+//			// this is a spell with only one more symbol
+//			if(spell.Length == currentSpell.Length+1){
+//				obj = GetObjectBySymbol(spell[currentSpell.Length]);
+//				outline = obj.GetComponent<Outline>();
+//				outline.effectColor = new Color(Color.magenta.r, Color.magenta.g, Color.magenta.b, outline.effectColor.a);
+//			}
+//			// else a few more symbols to go
+//			else if(spell.Length > currentSpell.Length+1){
+//				obj = GetObjectBySymbol(spell[currentSpell.Length]);
+//				outline = obj.GetComponent<Outline>();
+//				outline.effectColor = new Color(Color.red.r, Color.red.g, Color.red.b, outline.effectColor.a);
+//			}
+//
+//			if(outline != null) {
+//				outline.enabled = true;
+//			}
+//		}
 	}
 
 	public void FizzleSpell() {
