@@ -15,7 +15,7 @@ public class Utils
 	}
 
 	public static int GetSpellLength(int round) {
-		return Random.Range(0, Mathf.Min(12, 3+(round-1)));
+		return Random.Range(0, Mathf.Min(13, 3+round));
 	}
 }
 

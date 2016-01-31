@@ -17,6 +17,8 @@ public class SymbolController : MonoBehaviour {
 	public List<char> SpecialSymbols = new List<char>();
 	public CurrentSpell currentSpellUI;
 
+	public AudioSource yaay;
+
 	public float scoreMult = 1f;
 
 	public Transform parentTransform;
@@ -312,6 +314,8 @@ public class SymbolController : MonoBehaviour {
 				}
 			}
 		}
+
+		yaay.Play ();
 
 		scoreMult+=0.1f;
 		currentSpellUI.SetMultiplier (scoreMult);
