@@ -255,6 +255,10 @@ public class SymbolController : MonoBehaviour {
 	}
 
 	public void FizzleSpell() {
+		if (currentSpell == "") {
+			return;
+		}
+
 		Debug.Log("Spell Fizzled");
 
 		//add the cooldowns for the symbols
@@ -268,10 +272,9 @@ public class SymbolController : MonoBehaviour {
 		//ResetHighlights();
 		ResetDimmedSymbols(true);
 
-		if (currentSpell == "") {
-			scoreMult = 1f;
-			currentSpellUI.ResetMultiplier (true);
-		}
+
+		scoreMult = 1f;
+		currentSpellUI.ResetMultiplier (true);
 
 		currentSpell = "";
 		currentSpellUI.SetCurrentSpell (spellSearch.SearchSpells ("") [0]);
