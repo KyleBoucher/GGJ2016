@@ -18,6 +18,7 @@ public class SymbolController : MonoBehaviour {
 	public CurrentSpell currentSpellUI;
 
 	public AudioSource yaay;
+	public AudioSource cough;
 
 	public float scoreMult = 1f;
 
@@ -276,6 +277,8 @@ public class SymbolController : MonoBehaviour {
 
 		scoreMult = 1f;
 		currentSpellUI.ResetMultiplier (true);
+
+		cough.Play ();
 
 		currentSpell = "";
 		currentSpellUI.SetCurrentSpell (spellSearch.SearchSpells ("") [0]);
