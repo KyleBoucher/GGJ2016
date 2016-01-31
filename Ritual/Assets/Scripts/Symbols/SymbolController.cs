@@ -15,6 +15,9 @@ public class SymbolController : MonoBehaviour {
 	public Constants.PlayerIndex activePlayer;
 	public RoundController roundController;
 	public List<char> SpecialSymbols = new List<char>();
+	public CurrentSpell currentSpellUI;
+
+	public float scoreMult = 1f;
 
 	public Transform parentTransform;
 
@@ -59,6 +62,7 @@ public class SymbolController : MonoBehaviour {
 		}
 
 		spellSearch.GenerateNewSpell();
+		currentSpellUI.SetCurrentSpell (spellSearch.SearchSpells ("") [0]);
 	}
 
 	public GameObject GetObjectBySymbol(char symbol) {
@@ -84,6 +88,8 @@ public class SymbolController : MonoBehaviour {
 		roundController.BeginRound ();
 
 		HandleSpellSearch(symbol);
+
+		currentSpellUI.UpdateCurrentSpell (currentSpell);
 	}
 	public bool ValidateSpell() {
 		List<string> spells = spellSearch.SearchSpells(currentSpell);
@@ -139,6 +145,7 @@ public class SymbolController : MonoBehaviour {
 
 		//add to line renderer
 		lineController.AddPoint (GetObjectBySymbol (symbol).transform.localPosition + parentTransform.localPosition);
+		currentSpellUI.UpdateCurrentSpell (currentSpell);
 
 		HandleSpellSearch(symbol);
 	}
@@ -158,7 +165,11 @@ public class SymbolController : MonoBehaviour {
 			var child = parentPrefab.transform.GetChild (i);
 			var symbol = child.GetComponent<Symbol>();
 			symbol.StopCooldown ();
+			symbol.StopGlow ();
 		}
+
+		scoreMult = 1f;
+		currentSpellUI.ResetMultiplier (false);
 
 		ResetDimmedSymbols (false);
 	}
@@ -248,7 +259,13 @@ public class SymbolController : MonoBehaviour {
 		//ResetHighlights();
 		ResetDimmedSymbols(true);
 
+		if (currentSpell == "") {
+			scoreMult = 1f;
+			currentSpellUI.ResetMultiplier (true);
+		}
+
 		currentSpell = "";
+		currentSpellUI.SetCurrentSpell (spellSearch.SearchSpells ("") [0]);
 
 		//clear the line renderer
 		lineController.ResetLines ();
@@ -256,39 +273,46 @@ public class SymbolController : MonoBehaviour {
 
 	public void CastSpell() {
 		Debug.Log ("Spell cast: " + currentSpell);
-		var scoreMult = 1f;
+		/*var scoreMult = 0f;*/
 		GameObject obj = null;
 		foreach(char c in currentSpell) {
 			obj = GetObjectBySymbol(c);
 			Symbol s = obj.GetComponent<Symbol>();
 			s.StartCooldown(Utils.CalcCooldown(currentSpell));
 
-			if(SpecialSymbols.Contains(c)) {
-				scoreMult *= 2f;
+			/*if(SpecialSymbols.Contains(c)) {
+				scoreMult += 2f;
 				SpecialSymbols.Remove(c);
 				s.StopGlow ();
-			}
+			}*/
 		}
 		
 		//clear the line renderer
 		lineController.ResetLines ();
 
-		scoreController.AddScore (activePlayer, (int)(Utils.ConvertSpellToScore(currentSpell) * scoreMult));
-
 		// make one a special one
-		List<char> ssss = new List<char>(spellSearch.Symbols);
-		while(SpecialSymbols.Count < 12 && ssss.Count != 0) {
-			char s = ssss[Random.Range(0, ssss.Count)];
-			if(false == SpecialSymbols.Contains(s)) {
-				SpecialSymbols.Add(s);
-				GetObjectBySymbol (s).GetComponent<Symbol> ().StartGlow ();
-				break;
-			} else {
-				ssss.Remove(s);
+		var glowChance = 0;//Utils.GetGlowChance(currentSpell);
+		if (Random.Range (0, 1) < glowChance) {
+			List<char> ssss = new List<char> (spellSearch.Symbols);
+			while (SpecialSymbols.Count < 12 && ssss.Count != 0) {
+				char s = ssss [Random.Range (0, ssss.Count)];
+				if (false == SpecialSymbols.Contains (s)) {
+					SpecialSymbols.Add (s);
+					GetObjectBySymbol (s).GetComponent<Symbol> ().StartGlow ();
+					break;
+				} else {
+					ssss.Remove (s);
+				}
 			}
 		}
 
+		scoreController.AddScore (activePlayer, (int)(Utils.ConvertSpellToScore(currentSpell) * Mathf.Max(1f, scoreMult)));
+
+		scoreMult++;
+		currentSpellUI.SetMultiplier (scoreMult);
+
 		spellSearch.GenerateNewSpell();
+		currentSpellUI.SetCurrentSpell (spellSearch.SearchSpells ("") [0]);
 	}
 
 
