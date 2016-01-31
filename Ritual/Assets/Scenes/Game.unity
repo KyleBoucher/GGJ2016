@@ -3933,7 +3933,10 @@ MonoBehaviour:
   parentTransform: {fileID: 741663590}
   activePlayer: 1
   currentSpell: 
-  speed: 0.5
+  speed: 0.25
+  speedMult: 0
+  speedMultInc: 0.1
+  speedMultStart: 1
   isPlaying: 0
   isCooldown: 000000000000000000000000
   cooldowns:
@@ -3955,6 +3958,7 @@ MonoBehaviour:
   targetSymbol: {fileID: 0}
   startPosition: {x: 0, y: 0, z: 0}
   lerpFloat: 0
+  currentRound: 0
 --- !u!4 &2095641749
 Transform:
   m_ObjectHideFlags: 0

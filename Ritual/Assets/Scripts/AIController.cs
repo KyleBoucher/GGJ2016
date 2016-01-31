@@ -13,6 +13,9 @@ public class AIController : MonoBehaviour {
 	public string currentSpell = "";
 
 	public float speed;
+	public float speedMult;
+	public float speedMultInc;
+	public float speedMultStart;
 
 	public bool isPlaying = false;
 	public bool[] isCooldown = new bool[12];
@@ -25,6 +28,8 @@ public class AIController : MonoBehaviour {
 	public Vector3 startPosition;
 	public float lerpFloat;
 
+	public int currentRound;
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -33,15 +38,15 @@ public class AIController : MonoBehaviour {
 	void Update () {
 		if(isPlaying) {
 			// update cooldown symbols
-			for(int i = 0; i < cooldowns.Length; ++i) {
-				if(isCooldown[i]) {
-					cooldowns[i] -= Time.deltaTime;
-					if(cooldowns[i] <= 0f) {
-						cooldowns[i] = 0f;
-						isCooldown[i] = false;
-					}
-				}
-			}
+//			for(int i = 0; i < cooldowns.Length; ++i) {
+//				if(isCooldown[i]) {
+//					cooldowns[i] -= Time.deltaTime;
+//					if(cooldowns[i] <= 0f) {
+//						cooldowns[i] = 0f;
+//						isCooldown[i] = false;
+//					}
+//				}
+//			}
 
 			// do I have a target spell
 			if(targetSpell.Length != 0) {
@@ -52,7 +57,7 @@ public class AIController : MonoBehaviour {
 									.GetComponent<Symbol>().origPos + parentTransform.localPosition;
 				}
 
-				lerpFloat += Time.deltaTime*speed;
+				lerpFloat += Time.deltaTime*speed*speedMult;
 
 				currentMousePos = Vector3.Lerp(startPosition, targetSymbolPos, lerpFloat);
 				lineController.SetAIMousePos(currentMousePos);
@@ -69,13 +74,13 @@ public class AIController : MonoBehaviour {
 						targetSpell = "";
 						lineController.ResetLines();
 
-						foreach(char c in currentSpell) {
-							int ind = spellSearch.Symbols.BinarySearch(c);
-							if(ind != -1) {
-								isCooldown[ind] = true;
-								cooldowns[ind] = Mathf.Lerp(Settings._.BaseCooldown3, Settings._.BaseCooldown12, (currentSpell.Length-3)/9.0f);
-							}
-						}
+//						foreach(char c in currentSpell) {
+//							int ind = spellSearch.Symbols.BinarySearch(c);
+//							if(ind != -1) {
+//								isCooldown[ind] = true;
+//								cooldowns[ind] = Mathf.Lerp(Settings._.BaseCooldown3, Settings._.BaseCooldown12, (currentSpell.Length-3)/9.0f);
+//							}
+//						}
 					} 
 				}
 
@@ -83,21 +88,22 @@ public class AIController : MonoBehaviour {
 			// else
 				// no,
 				// search for all available spells with my currentSpell sequence
-				List<string> spells = spellSearch.AllSpells;
-				// strip all that have symbols on cooldown
-				List<string> tmpSpells = new List<string> (spells);
-				foreach(string spell in spells) {
-					for(int i = 0; i < isCooldown.Length; ++i) {
-						if(isCooldown[i] && spell.Contains("" + spellSearch.Symbols[i])) {
-							tmpSpells.Remove(spell);
-						}
-					}
-				}
+//				List<string> spells = spellSearch.AllSpells;
+//				// strip all that have symbols on cooldown
+//				List<string> tmpSpells = new List<string> (spells);
+//				foreach(string spell in spells) {
+//					for(int i = 0; i < isCooldown.Length; ++i) {
+//						if(isCooldown[i] && spell.Contains("" + spellSearch.Symbols[i])) {
+//							tmpSpells.Remove(spell);
+//						}
+//					}
+//				}
 
 				// is there leftover spells?
-				if(tmpSpells.Count > 0) {
+//				if(tmpSpells.Count > 0) {
 					// set target to random from leftover list
-					targetSpell = tmpSpells[Random.Range(0, tmpSpells.Count)];
+//					targetSpell = tmpSpells[Random.Range(0, tmpSpells.Count)];
+					targetSpell = spellSearch.GetAISpell(currentRound);
 					currentMousePos = symbolController.GetObjectBySymbol(targetSpell[0]).transform.localPosition + parentTransform.localPosition;
 					currentSpell = "" + targetSpell[0];
 
@@ -110,7 +116,7 @@ public class AIController : MonoBehaviour {
 					startPosition = currentMousePos;
 
 					lerpFloat = 0f;
-				} 
+//				} 
 				// else
 					// do nothing, next frame will update cooldowns
 			}
@@ -121,8 +127,15 @@ public class AIController : MonoBehaviour {
 		isPlaying = playing;
 	}
 
-	public void Begin() {
+	public void Begin(int round) {
 		SetIsPlaying(true);
+		currentRound = round;
+
+		if(currentRound == 1) {
+			speedMult = speedMultStart;
+		} else {
+			speedMult += speedMultInc;
+		}
 	}
 
 	public void Stop() {

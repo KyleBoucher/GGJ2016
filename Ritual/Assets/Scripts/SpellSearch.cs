@@ -20,7 +20,7 @@ public class SpellSearch : MonoBehaviour {
 		}
 	}
 
-	private string GetRandomSpell(int length) {
+	public string GetRandomSpell(int length) {
 		if(length < MinLength) {
 			length = MinLength;
 		}
@@ -55,7 +55,11 @@ public class SpellSearch : MonoBehaviour {
 	}
 
 	public void GenerateNewSpell(int round) {
-		currentSpell = GetRandomSpell(Random.Range(0, Mathf.Min(12, 3+(round-1))));
+		currentSpell = GetRandomSpell(Utils.GetSpellLength(round));
+	}
+
+	public string GetAISpell(int round) {
+		return GetRandomSpell(Utils.GetSpellLength(round));
 	}
 }
 

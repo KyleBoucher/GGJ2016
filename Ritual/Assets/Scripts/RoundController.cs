@@ -45,7 +45,7 @@ public class RoundController : MonoBehaviour {
 	public void BeginRound(){
 		if (roundStarted == false) {
 			roundStarted = true;
-			aiController.Begin ();
+			aiController.Begin (currentRound);
 
 			roundNumber.gameObject.SetActive (false);
 		}
@@ -71,3 +71,5 @@ public class RoundController : MonoBehaviour {
 		}
 	}
 }
+
+

@@ -13,5 +13,9 @@ public class Utils
 	public static float GetGlowChance( string spell ){
 		return (float)spell.Length / 12f;
 	}
+
+	public static int GetSpellLength(int round) {
+		return Random.Range(0, Mathf.Min(12, 3+(round-1)));
+	}
 }
 

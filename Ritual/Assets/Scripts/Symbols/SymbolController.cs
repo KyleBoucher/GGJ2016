@@ -219,8 +219,8 @@ public class SymbolController : MonoBehaviour {
 			FizzleSpell();
 		}
 //		List<char> symbols = new List<char>(spellSearch.Symbols);
-		Outline outline = null;
-		GameObject obj = null;
+//		Outline outline = null;
+//		GameObject obj = null;
 //		foreach(char c in symbols) {
 //			obj = GetObjectBySymbol(c);
 //			var s = obj.GetComponent<Symbol>();
