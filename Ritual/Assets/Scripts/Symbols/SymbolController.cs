@@ -81,6 +81,7 @@ public class SymbolController : MonoBehaviour {
 	}
 	
 	public void StartSpell(char symbol) {
+		
 		currentSpell = "" + symbol;
 
 		if(false == ValidatePartialSpell()) {

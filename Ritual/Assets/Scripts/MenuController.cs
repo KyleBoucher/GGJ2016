@@ -15,6 +15,7 @@ public class MenuController : MonoBehaviour
 
 	public void OnClick(){
 		startdragging = true;
+		line.gameObject.SetActive(true);
 
 		line.StartPos = selecter.transform.localPosition;
 	}
@@ -37,6 +38,8 @@ public class MenuController : MonoBehaviour
 			}
 
 			if (Input.GetMouseButton (0) == false) {
+				line.gameObject.SetActive(false);
+
 				if (lockedPlay) {
 					SceneManager.LoadScene ("Game");
 				} else {
