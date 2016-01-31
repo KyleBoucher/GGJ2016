@@ -35,7 +35,7 @@ public class CurrentSpell : MonoBehaviour
 	}
 
 	public void SetMultiplier( float multiplier ){
-		this.multiplier.text = string.Format ("x{0}", multiplier.ToString ("n0"));
+		this.multiplier.text = string.Format ("x{0}", multiplier.ToString ("f1"));
 		StopCoroutine ("LerpColorAndScale");
 		startColor = Color.yellow;
 		targetColor = Color.white;

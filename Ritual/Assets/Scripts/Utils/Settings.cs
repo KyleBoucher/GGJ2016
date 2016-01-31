@@ -26,6 +26,6 @@ public class Settings : MonoBehaviour {
 	public float BaseCooldown12 = 1.0f;
 
 	public int MinScore = 0;
-	public int StartingScore = 50;
+	public int StartingScore = 0;
 	public int MaxScore = 100;
 }

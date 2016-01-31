@@ -9,18 +9,20 @@ public class ScoreController : MonoBehaviour {
 	public Image opponentBar;
 	public GameObject slider;
 
-	private int gameScore;
+	private int playerOneScore;
+	private int playerTwoScore;
 
 	public void StartGame(){
-		gameScore = Settings._.StartingScore;
+		playerOneScore = Settings._.StartingScore;
+		playerTwoScore = Settings._.StartingScore;
 		UpdateUI ();
 	}
 	
 	public void AddScore( Constants.PlayerIndex playerIndex, int score){
 		if (playerIndex == Constants.PlayerIndex.PLAYER_1) {
-			gameScore += score;
+			playerOneScore += score;
 		} else {
-			gameScore -= score;
+			playerTwoScore += score;
 		}
 
 		UpdateUI ();
@@ -31,28 +33,31 @@ public class ScoreController : MonoBehaviour {
 
 	private void UpdateUI(){
 		var scoreOffset = Settings._.MaxScore - Settings._.MinScore;
-		var currentScore = gameScore - Settings._.MinScore;
+		//var currentScore = playerOneScore - Settings._.MinScore;
 
-		var scoreRatio = (float)currentScore / (float)scoreOffset;
+		var scoreRatio = (float)playerOneScore / (float)scoreOffset;
 		scoreRatio = Mathf.Clamp (scoreRatio, 0f, 1f);
 		playerBar.fillAmount = scoreRatio;
-		opponentBar.fillAmount = 1 - scoreRatio;
 
-		var sliderOffset = gameScore - Settings._.StartingScore;
+		scoreRatio = (float)playerTwoScore / (float)scoreOffset;
+		scoreRatio = Mathf.Clamp (scoreRatio, 0f, 1f);
+		opponentBar.fillAmount = scoreRatio;
+
+		/*var sliderOffset = gameScore - Settings._.StartingScore;
 		var sliderRatio = (float)sliderOffset / ((float)scoreOffset * 0.5f);
 		sliderRatio = Mathf.Clamp (sliderRatio, -1f, 1f);
 		var position = slider.transform.localPosition;
 		position.x = sliderRatio * Constants.scoreWidth / 2f;
-		slider.transform.localPosition = position;
+		slider.transform.localPosition = position;*/
 	}
 
 	private void CheckVictoryConditions(){
-		if (gameScore <= Settings._.MinScore) {
+		if (playerTwoScore >= Settings._.MaxScore) {
 			roundController.LoseGame ();
 			return;
 		}
 
-		if (gameScore >= Settings._.MaxScore) {
+		if (playerOneScore >= Settings._.MaxScore) {
 			roundController.NextRound ();
 			return;
 		}

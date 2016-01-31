@@ -27,6 +27,8 @@ public class SymbolController : MonoBehaviour {
 
 	public string currentSpell = "";
 
+	private int currentRound = 1;
+
 	// Use this for initialization
 	void Start () {
 		//generate symbol list
@@ -61,7 +63,8 @@ public class SymbolController : MonoBehaviour {
 			symbol.mySymbol = spellSearch.Symbols[i];
 		}
 
-		spellSearch.GenerateNewSpell();
+		currentRound = 1;
+		spellSearch.GenerateNewSpell(currentRound);
 		currentSpellUI.SetCurrentSpell (spellSearch.SearchSpells ("") [0]);
 	}
 
@@ -172,6 +175,10 @@ public class SymbolController : MonoBehaviour {
 		currentSpellUI.ResetMultiplier (false);
 
 		ResetDimmedSymbols (false);
+	}
+
+	public void SetRound( int round ){
+		currentRound = round;
 	}
 
 	private void ResetDimmedSymbols(bool fizzle) {
@@ -306,12 +313,12 @@ public class SymbolController : MonoBehaviour {
 			}
 		}
 
-		scoreController.AddScore (activePlayer, (int)(Utils.ConvertSpellToScore(currentSpell) * Mathf.Max(1f, scoreMult)));
-
-		scoreMult++;
+		scoreMult+=0.1f;
 		currentSpellUI.SetMultiplier (scoreMult);
 
-		spellSearch.GenerateNewSpell();
+		scoreController.AddScore (activePlayer, (int)(Utils.ConvertSpellToScore(currentSpell) * Mathf.Max(1f, scoreMult-1)));
+
+		spellSearch.GenerateNewSpell(currentRound);
 		currentSpellUI.SetCurrentSpell (spellSearch.SearchSpells ("") [0]);
 	}
 

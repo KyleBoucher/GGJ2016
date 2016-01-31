@@ -54,8 +54,8 @@ public class SpellSearch : MonoBehaviour {
 		return retList;
 	}
 
-	public void GenerateNewSpell() {
-		currentSpell = GetRandomSpell(Random.Range(0, MaxLength));
+	public void GenerateNewSpell(int round) {
+		currentSpell = GetRandomSpell(Random.Range(0, Mathf.Min(12, 3+(round-1))));
 	}
 }
 
